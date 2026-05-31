@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.inaun.datawatch"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <uses-feature android:name="android.hardware.type.watch" />
+    <uses-sdk android:minSdkVersion="33" android:targetSdkVersion="34" />
+
+    <application
+        android:hasCode="false"
+        android:label="@string/watch_face_name"
+        android:icon="@drawable/preview">
+
+        <!-- WFF v2 covers everything this face uses (complications, ambient
+             Variants, heart-rate data source) and runs on Wear OS 4/5/6. -->
+        <property
+            android:name="com.google.wear.watchface.format.version"
+            android:value="2" />
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+    </application>
+</manifest>

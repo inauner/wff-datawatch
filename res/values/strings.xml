@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="watch_face_name">Data 9</string>
+
+    <!-- Complication slot display names (shown in the on-watch editor) -->
+    <string name="comp_sun">Sunrise / Sunset</string>
+    <string name="comp_temp">Temperature</string>
+    <string name="comp_uv">UV index</string>
+    <string name="comp_azm">Active Zone Minutes</string>
+    <string name="comp_stopwatch">Distance</string>
+    <string name="comp_floors">Floors</string>
+    <string name="comp_extra_l">Extra (lower left)</string>
+    <string name="comp_extra_r">Extra (lower right)</string>
+</resources>

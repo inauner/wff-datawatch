@@ -1,0 +1,13 @@
+# Build output (APKs, intermediate files, dev screenshots)
+/build/
+
+# Signing key — never publish
+*.keystore
+
+# Downloaded tooling (re-fetched by build.ps1 / docs); large, not source
+/libs/
+
+# Misc temp
+*.tmp
+rel.json
+val.txt

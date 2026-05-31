@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Data 9 - data-rich digital watch face for Wear OS (Pixel Watch 4).
+  12 data points around the outer ring at clock-hour positions (450x450 canvas).
+
+  Built-in (always render): HR(11), GOAL%(7), STEPS(6), BAT(5), date/time.
+  8 complication slots (need a provider; defaults set per slot):
+    12 FLOORS(6) 1 TEMP(3) 2 AZM(4) 3 (8) 4 STW(5) 5 (7-l? no) ...
+    SUN(1,10oc) UV(2,9oc) and the two generic slots at 3 & 8 o'clock.
+
+  Static labels are PLAIN TEXT inside <Font> (a <Template> needs a <Parameter>,
+  so static strings must NOT be wrapped in Template). Data values use
+  Template+Parameter. Ambient: time stays (thin/dim), ring hides.
+-->
+<WatchFace width="450" height="450">
+
+    <Metadata key="CLOCK_TYPE" value="DIGITAL" />
+    <Metadata key="PREVIEW_TIME" value="10:08:32" />
+
+    <Scene backgroundColor="#ff000000">
+
+        <!-- ===== H/M/S RAINBOW DOT INDICATORS =====
+             Three concentric tracks, each = a STATIC ROYGBIV ring + a rotating
+             BLACK mask leaving one dot that reveals the ring color at its
+             position (color changes as it revolves). Radius order (inner->out):
+             HOURS (small radius), MINUTES (middle), SECONDS (outer rim).
+             Dot sizes: seconds normal, minutes ~30%, hours ~10%.
+             0deg=12 o'clock, clockwise. Hidden in ambient (no tick in AOD). -->
+        <Group name="hms" x="0" y="0" width="450" height="450" alpha="255">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+
+            <!-- SECONDS: outer rim (r=216), normal dot (~5deg, th 9) -->
+            <PartDraw x="0" y="0" width="450" height="450">
+                <Arc centerX="225" centerY="225" width="432" height="432"
+                    startAngle="0" endAngle="360">
+                    <Stroke color="#ffff0000" thickness="9" cap="BUTT">
+                        <SweepGradient centerX="225" centerY="225"
+                            startAngle="0" endAngle="360"
+                            colors="#ffff0000 #ffff8800 #ffffee00 #ff00ff00 #ff0088ff #ff0000ff #ff9500ff #ffff0000"
+                            positions="0.0 0.16 0.33 0.5 0.66 0.83 0.92 1.0" />
+                    </Stroke>
+                </Arc>
+            </PartDraw>
+            <PartDraw x="0" y="0" width="450" height="450"
+                pivotX="0.5" pivotY="0.5" angle="0">
+                <Arc centerX="225" centerY="225" width="432" height="432"
+                    startAngle="0" endAngle="355">
+                    <Stroke color="#ff000000" thickness="13" cap="BUTT" />
+                </Arc>
+                <Transform target="angle"
+                    value="([SECOND] + [MILLISECOND] / 1000) * 6" />
+            </PartDraw>
+
+            <!-- MINUTES: middle (r=145), 2x size dot (th 8, window ~4.6deg) -->
+            <PartDraw x="0" y="0" width="450" height="450">
+                <Arc centerX="225" centerY="225" width="290" height="290"
+                    startAngle="0" endAngle="360">
+                    <Stroke color="#ffff0000" thickness="8" cap="BUTT">
+                        <SweepGradient centerX="225" centerY="225"
+                            startAngle="0" endAngle="360"
+                            colors="#ffff0000 #ffff8800 #ffffee00 #ff00ff00 #ff0088ff #ff0000ff #ff9500ff #ffff0000"
+                            positions="0.0 0.16 0.33 0.5 0.66 0.83 0.92 1.0" />
+                    </Stroke>
+                </Arc>
+            </PartDraw>
+            <PartDraw x="0" y="0" width="450" height="450"
+                pivotX="0.5" pivotY="0.5" angle="0">
+                <Arc centerX="225" centerY="225" width="290" height="290"
+                    startAngle="0" endAngle="355.4">
+                    <Stroke color="#ff000000" thickness="16" cap="BUTT" />
+                </Arc>
+                <Transform target="angle"
+                    value="([MINUTE] + [SECOND] / 60) * 6" />
+            </PartDraw>
+
+            <!-- HOURS: own inner ring (r=95), 3x size dot (th 9, window ~5.4deg) -->
+            <PartDraw x="0" y="0" width="450" height="450">
+                <Arc centerX="225" centerY="225" width="190" height="190"
+                    startAngle="0" endAngle="360">
+                    <Stroke color="#ffff0000" thickness="9" cap="BUTT">
+                        <SweepGradient centerX="225" centerY="225"
+                            startAngle="0" endAngle="360"
+                            colors="#ffff0000 #ffff8800 #ffffee00 #ff00ff00 #ff0088ff #ff0000ff #ff9500ff #ffff0000"
+                            positions="0.0 0.16 0.33 0.5 0.66 0.83 0.92 1.0" />
+                    </Stroke>
+                </Arc>
+            </PartDraw>
+            <PartDraw x="0" y="0" width="450" height="450"
+                pivotX="0.5" pivotY="0.5" angle="0">
+                <Arc centerX="225" centerY="225" width="190" height="190"
+                    startAngle="0" endAngle="354.6">
+                    <Stroke color="#ff000000" thickness="21" cap="BUTT" />
+                </Arc>
+                <Transform target="angle"
+                    value="([HOUR_1_12] + [MINUTE] / 60) * 30" />
+            </PartDraw>
+        </Group>
+
+        <!-- ============================ TIME ============================ -->
+        <DigitalClock x="0" y="145" width="450" height="135">
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE" align="CENTER"
+                x="0" y="0" width="450" height="135">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Font family="SYNC_TO_DEVICE" size="72" weight="NORMAL" color="#ffffffff" />
+            </TimeText>
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE" align="CENTER"
+                x="0" y="0" width="450" height="135" alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+                <Font family="SYNC_TO_DEVICE" size="72" weight="THIN" color="#ffb0b0b0" />
+            </TimeText>
+            <TimeText format="ss" align="CENTER"
+                x="0" y="92" width="450" height="44">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#ff9a9a9a" />
+            </TimeText>
+        </DigitalClock>
+
+        <!-- MOON PHASE as a number (days since new moon, 0-28), centered just
+             above the date. Font size 8. -->
+        <PartText x="125" y="122" width="200" height="14" alpha="255">
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="12" color="#ffd0d0d0">
+                    <Template><![CDATA[%s %s]]>
+                        <Parameter expression="[MOON_PHASE_TYPE_STRING]" />
+                        <Parameter expression="round([MOON_PHASE_POSITION])" />
+                    </Template>
+                </Font>
+            </Text>
+            <Variant mode="AMBIENT" target="alpha" value="120" />
+        </PartText>
+
+        <!-- ============================ DATE ============================ -->
+        <PartText x="125" y="138" width="200" height="32" alpha="255">
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="20" color="#ffd0d0d0">
+                    <Template><![CDATA[%s %s]]>
+                        <Parameter expression="[DAY_OF_WEEK_S]" />
+                        <Parameter expression="[DAY]" />
+                    </Template>
+                </Font>
+            </Text>
+            <Variant mode="AMBIENT" target="alpha" value="120" />
+        </PartText>
+
+        <!-- ============ BUILT-IN VALUES + RING LABELS (hide in ambient) ============ -->
+        <Group name="ring" x="0" y="0" width="450" height="450" alpha="255">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+
+            <!-- 12 o'clock: BATTERY (built-in - swapped with FLOORS) -->
+            <PartText x="170" y="15" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">BAT</Font></Text>
+            </PartText>
+            <PartText x="170" y="29" width="110" height="32">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="24" color="#ff00ff00">
+                    <Template><![CDATA[%s%%]]><Parameter expression="[BATTERY_PERCENT]" /></Template>
+                </Font></Text>
+            </PartText>
+
+            <!-- 7 o'clock: STEPS (built-in - swapped with HR) -->
+            <PartText x="81" y="352" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">STEPS</Font></Text>
+            </PartText>
+            <PartText x="81" y="366" width="110" height="32">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="24" color="#ffff5500">
+                    <Template><![CDATA[%s]]><Parameter expression="[STEP_COUNT]" /></Template>
+                </Font></Text>
+            </PartText>
+
+            <!-- 3 o'clock: LOS ANGELES hour (24h, DST-aware). A DigitalClock
+                 with a Localization timeZone renders that zone's local time;
+                 format="H" = hour 0-23 with no leading zero, no minutes. -->
+            <PartText x="348" y="197" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">LA</Font></Text>
+            </PartText>
+            <DigitalClock x="348" y="211" width="110" height="32">
+                <Localization timeZone="America/Los_Angeles" />
+                <TimeText format="h" hourFormat="24" align="CENTER" x="0" y="0" width="110" height="32">
+                    <Font family="SYNC_TO_DEVICE" size="24" color="#ff0073ff" />
+                </TimeText>
+            </DigitalClock>
+
+            <!-- 6 o'clock: HEART RATE (built-in - swapped with STEPS, enlarged) -->
+            <PartText x="170" y="356" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">HR</Font></Text>
+            </PartText>
+            <PartText x="170" y="364" width="110" height="50">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="38" color="#ffff0000">
+                    <Template><![CDATA[%s]]><Parameter expression="[HEART_RATE]" /></Template>
+                </Font></Text>
+            </PartText>
+
+            <!-- Complication-slot labels (slot value renders just below each) -->
+            <PartText x="259" y="356" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">FLOORS</Font></Text>
+            </PartText>
+            <PartText x="15" y="108" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">TEMP</Font></Text>
+            </PartText>
+            <PartText x="15" y="286" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">AZM</Font></Text>
+            </PartText>
+            <PartText x="325" y="288" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">DIST</Font></Text>
+            </PartText>
+            <PartText x="325" y="108" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff707070">Timer</Font></Text>
+            </PartText>
+            <PartText x="259" y="42" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff707070">Itin</Font></Text>
+            </PartText>
+            <PartText x="0" y="197" width="110" height="14">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">UV</Font></Text>
+            </PartText>
+            <PartText x="81" y="48" width="110" height="18">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">SUN</Font></Text>
+            </PartText>
+        </Group>
+
+        <!-- ===================== COMPLICATION SLOTS ===================== -->
+        <!-- Order inside slot: DefaultProviderPolicy -> Bounding -> Complication.
+             Each value box sits just under its ring label. Hide in ambient. -->
+
+        <!-- 5 o'clock: FLOORS (slot 6 - swapped with BAT) -->
+        <ComplicationSlot slotId="6" displayName="comp_floors"
+            x="259" y="368" width="110" height="34"
+            supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy
+                primaryProvider="com.fitbit.FitbitMobile/com.fitbit.complications.floors.FloorsComplicationDataSourceService"
+                primaryProviderType="SHORT_TEXT"
+                defaultSystemProvider="STEP_COUNT" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="34" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ff9500ff">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- 10 o'clock: TEMPERATURE (slot 3 - swapped with SUN) -->
+        <ComplicationSlot slotId="3" displayName="comp_temp"
+            x="15" y="124" width="110" height="40"
+            supportedTypes="SHORT_TEXT RANGED_VALUE SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy
+                primaryProvider="com.google.android.apps.weather/com.google.android.wearable.weather.pixel.ui.complications.currentweather.CWComplicationService"
+                primaryProviderType="SHORT_TEXT"
+                defaultSystemProvider="DAY_OF_WEEK" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="40" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ffaaff00">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- 8 o'clock: ACTIVE ZONE MINUTES (slot 4 - swapped with GOAL) -->
+        <ComplicationSlot slotId="4" displayName="comp_azm"
+            x="15" y="302" width="110" height="34"
+            supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy
+                primaryProvider="com.fitbit.FitbitMobile/com.fitbit.complications.azm.AZMComplicationDataSourceService"
+                primaryProviderType="SHORT_TEXT"
+                defaultSystemProvider="STEP_COUNT" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="34" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ffffaa00">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- 2 o'clock: GENERIC (slot 8 - swapped with DIST) -->
+        <ComplicationSlot slotId="8" displayName="comp_extra_r"
+            x="325" y="124" width="110" height="34"
+            supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy defaultSystemProvider="WATCH_BATTERY" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="34" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ff00f7ff">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- 4 o'clock: DISTANCE (slot 5 - swapped with SET/slot8) -->
+        <ComplicationSlot slotId="5" displayName="comp_stopwatch"
+            x="325" y="302" width="110" height="34"
+            supportedTypes="SHORT_TEXT RANGED_VALUE SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy
+                primaryProvider="com.fitbit.FitbitMobile/com.fitbit.complications.distance.DistanceComplicationDataSourceService"
+                primaryProviderType="SHORT_TEXT"
+                defaultSystemProvider="STEP_COUNT" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="34" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ff1100ff">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- 1 o'clock: GENERIC (slot 7 - moved from 8) -->
+        <ComplicationSlot slotId="7" displayName="comp_extra_l"
+            x="259" y="58" width="110" height="34"
+            supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy defaultSystemProvider="DATE" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="34" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ff00ff84">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- 9 o'clock: UV (slot 2) -->
+        <ComplicationSlot slotId="2" displayName="comp_uv"
+            x="0" y="213" width="110" height="34"
+            supportedTypes="SHORT_TEXT RANGED_VALUE SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy
+                primaryProvider="com.google.android.apps.weather/com.google.android.wearable.weather.pixel.ui.complications.uv.UvComplicationService"
+                primaryProviderType="SHORT_TEXT"
+                defaultSystemProvider="WORLD_CLOCK" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="34" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ffffff00">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- 11 o'clock: SUNRISE/SUNSET (slot 1 - swapped with TEMP) -->
+        <ComplicationSlot slotId="1" displayName="comp_sun"
+            x="81" y="64" width="110" height="34"
+            supportedTypes="SHORT_TEXT SMALL_IMAGE RANGED_VALUE EMPTY">
+            <DefaultProviderPolicy
+                primaryProvider="com.google.android.apps.weather/com.google.android.wearable.weather.pixel.ui.complications.solar.SolarComplicationService"
+                primaryProviderType="SHORT_TEXT"
+                defaultSystemProvider="SUNRISE_SUNSET" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="110" height="34" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="110" height="34" alpha="255">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ff55ff00">
+                            <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                </PartText>
+            </Complication>
+        </ComplicationSlot>
+
+    </Scene>
+</WatchFace>
