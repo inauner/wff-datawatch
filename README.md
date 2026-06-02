@@ -4,7 +4,7 @@ A digital watch face for Wear OS (built & tested on **Pixel Watch 4 / Wear OS 6*
 written in the declarative [Watch Face Format (WFF)](https://developer.android.com/training/wearables/wff)
 — **no compiled code**.
 
-![preview](res/drawable/preview.png)
+![Data 9 on a Pixel Watch 4](docs/watch.png)
 
 ## Features
 
