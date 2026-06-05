@@ -124,6 +124,34 @@
             </TimeText>
         </DigitalClock>
 
+        <!-- Invisible tap target over the time digits -> launch Gemini.
+             DigitalClock can't hold a <Launch>, so this transparent PartText
+             overlays the clock and catches the tap. -->
+        <PartText x="115" y="150" width="220" height="100" alpha="0">
+            <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="1" color="#00000000"> </Font></Text>
+            <Launch target="com.google.android.wearable.assistant/com.google.android.wearable.assistant.JokerActivity" />
+        </PartText>
+
+        <!-- Three tappable app icons below the time. Hidden in ambient. -->
+        <!-- lower-left: computer mouse -> WearMouse -->
+        <PartImage x="128" y="296" width="34" height="34" tintColor="#ff808080">
+            <Image resource="ic_mouse" />
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Launch target="com.ginkage.wearmouse/com.ginkage.wearmouse.ui.devices.WelcomeActivity" />
+        </PartImage>
+        <!-- lower-middle: music note -> YouTube Music -->
+        <PartImage x="208" y="296" width="34" height="34" tintColor="#ff808080">
+            <Image resource="ic_music" />
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Launch target="com.google.android.apps.youtube.music/com.google.android.apps.youtube.music.wear.compose.activity.main.WearMainActivityCompose" />
+        </PartImage>
+        <!-- lower-right: book -> Audible -->
+        <PartImage x="288" y="296" width="34" height="34" tintColor="#ff808080">
+            <Image resource="ic_book" />
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Launch target="com.audible.application/com.audible.application.wearos.ui.app.MainActivity" />
+        </PartImage>
+
         <!-- MOON PHASE as a number (days since new moon, 0-28), centered just
              above the date. Font size 8. -->
         <PartText x="125" y="122" width="200" height="14" alpha="255">
@@ -163,6 +191,8 @@
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="24" color="#ffaaff00">
                     <Template><![CDATA[%s%%]]><Parameter expression="[BATTERY_PERCENT]" /></Template>
                 </Font></Text>
+                <!-- tap BAT -> Settings -->
+                <Launch target="com.google.android.apps.wearable.settings/com.google.android.clockwork.settings.MainSettingsActivity" />
             </PartText>
 
             <!-- 12 o'clock: STEPS (built-in - swapped to 12, big font like HR) -->
@@ -173,6 +203,9 @@
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="42" color="#ff00ff00">
                     <Template><![CDATA[%s]]><Parameter expression="[STEP_COUNT]" /></Template>
                 </Font></Text>
+                <!-- EXPERIMENTAL: tap STEPS -> flashlight. Free-string launch
+                     target; may silently no-op on-device (unverified). -->
+                <Launch target="com.google.android.clockwork.flashlight/com.google.android.clockwork.flashlight.FlashlightActivity" />
             </PartText>
 
             <!-- 3 o'clock: LOS ANGELES hour (24h, DST-aware). A DigitalClock
@@ -180,6 +213,12 @@
                  format="H" = hour 0-23 with no leading zero, no minutes. -->
             <PartText x="81" y="48" width="110" height="14">
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">LA</Font></Text>
+            </PartText>
+            <!-- tap LA -> Fitbit Relax (Breathe). DigitalClock can't hold a
+                 Launch, so a transparent PartText overlays it to catch taps. -->
+            <PartText x="81" y="48" width="110" height="48" alpha="0">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="1" color="#00000000"> </Font></Text>
+                <Launch target="com.fitbit.FitbitMobile/com.google.android.wearable.fitbit.mainapp.relax.RelaxActivityAlias2" />
             </PartText>
             <DigitalClock x="81" y="64" width="110" height="32">
                 <Localization timeZone="America/Los_Angeles" />
@@ -196,6 +235,8 @@
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="42" color="#ffff0000">
                     <Template><![CDATA[%s]]><Parameter expression="[HEART_RATE]" /></Template>
                 </Font></Text>
+                <!-- tap HR -> Fitbit Today -->
+                <Launch target="com.fitbit.FitbitMobile/com.google.android.wearable.fitbit.mainapp.today.TodayMainActivityAlias2" />
             </PartText>
 
             <!-- Complication-slot labels (slot value renders just below each) -->
