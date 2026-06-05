@@ -74,7 +74,7 @@ Write-Host "[2/4] aapt2 link" -ForegroundColor Cyan
     -o "$build\unaligned.apk" `
     -I $androidJar `
     --manifest "$root\AndroidManifest.xml" `
-    --min-sdk-version 33 --target-sdk-version 34 `
+    --min-sdk-version 34 --target-sdk-version 34 `
     "$build\res.zip"
 
 Write-Host "[3/4] zipalign" -ForegroundColor Cyan

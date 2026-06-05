@@ -11,3 +11,7 @@
 *.tmp
 rel.json
 val.txt
+
+# Play upload signing key — NEVER commit
+upload.keystore
+/build-aab/

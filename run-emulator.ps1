@@ -41,9 +41,12 @@ if (-not $OnlyInstall) {
         Write-Host "AVD '$Avd' already exists." -ForegroundColor DarkGray
     }
 
-    Write-Host "Launching emulator..." -ForegroundColor Cyan
-    Start-Process -FilePath $emulator `
-        -ArgumentList @("-avd", $Avd, "-no-snapshot-save", "-no-boot-anim")
+    Write-Host "Launching emulator via WMI to prevent auto-close..." -ForegroundColor Cyan
+    $cmdline = "`"$emulator`" -avd $Avd -no-snapshot-save -no-boot-anim"
+    $res = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = $cmdline }
+    if ($res.ReturnValue -ne 0) {
+        throw "Failed to launch emulator via WMI. Return value: $($res.ReturnValue)"
+    }
     Wait-Boot
 }
 
