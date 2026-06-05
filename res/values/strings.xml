@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="watch_face_name">Data 9</string>
+    <string name="watch_face_name">Rainbow Data</string>
 
     <!-- Complication slot display names (shown in the on-watch editor) -->
     <string name="comp_sun">Sunrise / Sunset</string>

@@ -155,12 +155,12 @@
         <Group name="ring" x="0" y="0" width="450" height="450" alpha="255">
             <Variant mode="AMBIENT" target="alpha" value="0" />
 
-            <!-- 8 o'clock: BATTERY (built-in - swapped to 8) -->
-            <PartText x="15" y="286" width="110" height="14">
+            <!-- 10 o'clock: BATTERY (built-in - swapped with TEMP) -->
+            <PartText x="15" y="108" width="110" height="14">
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">BAT</Font></Text>
             </PartText>
-            <PartText x="15" y="300" width="110" height="32">
-                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="24" color="#ffffaa00">
+            <PartText x="15" y="124" width="110" height="32">
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="24" color="#ffaaff00">
                     <Template><![CDATA[%s%%]]><Parameter expression="[BATTERY_PERCENT]" /></Template>
                 </Font></Text>
             </PartText>
@@ -202,7 +202,7 @@
             <PartText x="259" y="356" width="110" height="14">
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">FLOORS</Font></Text>
             </PartText>
-            <PartText x="15" y="108" width="110" height="14">
+            <PartText x="15" y="286" width="110" height="14">
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">TEMP</Font></Text>
             </PartText>
             <PartText x="81" y="352" width="110" height="14">
@@ -215,7 +215,7 @@
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff707070">Timer</Font></Text>
             </PartText>
             <PartText x="259" y="42" width="110" height="14">
-                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff707070">Itin</Font></Text>
+                <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff707070">SET</Font></Text>
             </PartText>
             <PartText x="0" y="197" width="110" height="14">
                 <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="11" color="#ff808080">UV</Font></Text>
@@ -230,11 +230,11 @@
              Each value box sits just under its ring label. Hide in ambient. -->
 
         <!-- 5 o'clock: FLOORS (slot 6 - swapped with BAT) -->
-        <ComplicationSlot slotId="6" displayName="comp_floors"
+        <ComplicationSlot slotId="5" displayName="comp_floors"
             x="259" y="368" width="110" height="34"
             supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
             <DefaultProviderPolicy
-                primaryProvider="com.fitbit.FitbitMobile/com.fitbit.complications.floors.FloorsComplicationDataSourceService"
+                primaryProvider="com.fitbit.FitbitMobile/com.google.android.wearable.fitbit.mainapp.complications.offloadable.floors.OffloadableFloorsComplicationDataSourceService"
                 primaryProviderType="SHORT_TEXT"
                 defaultSystemProvider="STEP_COUNT" defaultSystemProviderType="SHORT_TEXT" />
             <BoundingOval x="0" y="0" width="110" height="34" />
@@ -250,9 +250,9 @@
             </Complication>
         </ComplicationSlot>
 
-        <!-- 10 o'clock: TEMPERATURE (slot 3 - swapped with SUN) -->
-        <ComplicationSlot slotId="3" displayName="comp_temp"
-            x="15" y="124" width="110" height="40"
+        <!-- 8 o'clock: TEMPERATURE (slot 8 - swapped with BATTERY) -->
+        <ComplicationSlot slotId="8" displayName="comp_temp"
+            x="15" y="300" width="110" height="40"
             supportedTypes="SHORT_TEXT RANGED_VALUE SMALL_IMAGE EMPTY">
             <DefaultProviderPolicy
                 primaryProvider="com.google.android.apps.weather/com.google.android.wearable.weather.pixel.ui.complications.currentweather.CWComplicationService"
@@ -262,7 +262,7 @@
             <Complication type="SHORT_TEXT">
                 <PartText x="0" y="0" width="110" height="40" alpha="255">
                     <Text align="CENTER" ellipsis="TRUE">
-                        <Font family="SYNC_TO_DEVICE" size="24" color="#ffaaff00">
+                        <Font family="SYNC_TO_DEVICE" size="24" color="#ffffaa00">
                             <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
                         </Font>
                     </Text>
@@ -272,11 +272,11 @@
         </ComplicationSlot>
 
         <!-- 7 o'clock: ACTIVE ZONE MINUTES (slot 4 - swapped to 7) -->
-        <ComplicationSlot slotId="4" displayName="comp_azm"
+        <ComplicationSlot slotId="6" displayName="comp_azm"
             x="81" y="366" width="110" height="34"
             supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
             <DefaultProviderPolicy
-                primaryProvider="com.fitbit.FitbitMobile/com.fitbit.complications.azm.AZMComplicationDataSourceService"
+                primaryProvider="com.fitbit.FitbitMobile/com.google.android.wearable.fitbit.mainapp.complications.offloadable.azm.OffloadableAZMComplicationDataSourceService"
                 primaryProviderType="SHORT_TEXT"
                 defaultSystemProvider="STEP_COUNT" defaultSystemProviderType="SHORT_TEXT" />
             <BoundingOval x="0" y="0" width="110" height="34" />
@@ -292,11 +292,15 @@
             </Complication>
         </ComplicationSlot>
 
-        <!-- 2 o'clock: GENERIC (slot 8 - swapped with DIST) -->
-        <ComplicationSlot slotId="8" displayName="comp_extra_r"
+        <!-- 2 o'clock: TIMER (slot 2). Deskclock's TimerProviderService shows
+             the live countdown; APP_SHORTCUT fallback opens the timer app. -->
+        <ComplicationSlot slotId="2" displayName="comp_extra_r"
             x="325" y="124" width="110" height="34"
-            supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
-            <DefaultProviderPolicy defaultSystemProvider="WATCH_BATTERY" defaultSystemProviderType="SHORT_TEXT" />
+            supportedTypes="SHORT_TEXT RANGED_VALUE SMALL_IMAGE EMPTY">
+            <DefaultProviderPolicy
+                primaryProvider="com.google.android.deskclock/com.google.android.deskclock.complications.TimerProviderService"
+                primaryProviderType="SHORT_TEXT"
+                defaultSystemProvider="APP_SHORTCUT" defaultSystemProviderType="SHORT_TEXT" />
             <BoundingOval x="0" y="0" width="110" height="34" />
             <Complication type="SHORT_TEXT">
                 <PartText x="0" y="0" width="110" height="34" alpha="255">
@@ -311,11 +315,11 @@
         </ComplicationSlot>
 
         <!-- 4 o'clock: DISTANCE (slot 5 - swapped with SET/slot8) -->
-        <ComplicationSlot slotId="5" displayName="comp_stopwatch"
+        <ComplicationSlot slotId="4" displayName="comp_stopwatch"
             x="325" y="302" width="110" height="34"
             supportedTypes="SHORT_TEXT RANGED_VALUE SMALL_IMAGE EMPTY">
             <DefaultProviderPolicy
-                primaryProvider="com.fitbit.FitbitMobile/com.fitbit.complications.distance.DistanceComplicationDataSourceService"
+                primaryProvider="com.fitbit.FitbitMobile/com.google.android.wearable.fitbit.mainapp.complications.offloadable.distance.OffloadableDistanceComplicationDataSourceService"
                 primaryProviderType="SHORT_TEXT"
                 defaultSystemProvider="STEP_COUNT" defaultSystemProviderType="SHORT_TEXT" />
             <BoundingOval x="0" y="0" width="110" height="34" />
@@ -332,7 +336,7 @@
         </ComplicationSlot>
 
         <!-- 1 o'clock: GENERIC (slot 7 - moved from 8) -->
-        <ComplicationSlot slotId="7" displayName="comp_extra_l"
+        <ComplicationSlot slotId="1" displayName="comp_extra_l"
             x="259" y="58" width="110" height="34"
             supportedTypes="SHORT_TEXT RANGED_VALUE GOAL_PROGRESS SMALL_IMAGE EMPTY">
             <DefaultProviderPolicy defaultSystemProvider="DATE" defaultSystemProviderType="SHORT_TEXT" />
@@ -350,7 +354,7 @@
         </ComplicationSlot>
 
         <!-- 9 o'clock: UV (slot 2) -->
-        <ComplicationSlot slotId="2" displayName="comp_uv"
+        <ComplicationSlot slotId="7" displayName="comp_uv"
             x="0" y="213" width="110" height="34"
             supportedTypes="SHORT_TEXT RANGED_VALUE SMALL_IMAGE EMPTY">
             <DefaultProviderPolicy
@@ -371,7 +375,7 @@
         </ComplicationSlot>
 
         <!-- 3 o'clock: SUNRISE/SUNSET (slot 1 - swapped with LA) -->
-        <ComplicationSlot slotId="1" displayName="comp_sun"
+        <ComplicationSlot slotId="3" displayName="comp_sun"
             x="348" y="211" width="110" height="34"
             supportedTypes="SHORT_TEXT SMALL_IMAGE RANGED_VALUE EMPTY">
             <DefaultProviderPolicy
